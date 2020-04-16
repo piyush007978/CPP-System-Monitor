@@ -88,7 +88,7 @@ float LinuxParser::MemoryUtilization() {
     return (MemTotal - MemFree)/ MemTotal; 
   }
 
-// TODO: Read and return the system uptime
+// Done: Read and return the system uptime
 long LinuxParser::UpTime() 
 {
   long uptime;
@@ -96,14 +96,14 @@ long LinuxParser::UpTime()
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if(stream.is_open()){
     std::getline(stream,line);
-    std::istringstream iss;
-    iss >> key;
+    std::istringstream linestream(line);
+    linestream >> key;
     uptime = stol(key);
   }
   return uptime;
 }
 
-// TODO: Read and return the number of jiffies for the system
+
 // DONE: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return ActiveJiffies() + IdleJiffies(); }
 // DONE: Read and return the number of active jiffies for the system
@@ -207,7 +207,8 @@ string LinuxParser::Command(int pid) {
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
-  string line, key, ram;
+  string line, key;
+  string ram = "N/A";
   int ramsize;
   std::ifstream file(kProcDirectory + to_string(pid) + kStatusFilename);
   if(file.is_open()){
@@ -218,10 +219,11 @@ string LinuxParser::Ram(int pid) {
       linestream >> ram;
       ramsize = stoi(ram);
       ramsize /= 1000;
+      ram = to_string(ramsize);
   } 
   }
   }
-  return to_string(ramsize); 
+  return ram; 
 }
 
 // TODO: Read and return the user ID associated with a process
@@ -257,25 +259,24 @@ double seconds;
   return ((total_time/sysconf(_SC_CLK_TCK))/seconds);
 }
 // TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid) {
-  string user,line,passwd,currentUid;
+  string result, user, line, passwd, currentuid;
   string uid = LinuxParser::Uid(pid);
   std::ifstream file(kPasswordPath);
   if(uid.length() && file.is_open()){
   while(std::getline(file,line)){
-    std::istringstream linestream(line);
-    linestream >> user >> passwd >> currentUid;
-    if(currentUid == uid){
-    return user;
+    std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream stream(line);
+      while (stream >> user >> passwd >> currentuid) {
+        if (currentuid == uid)
+          result = user;
+      }
     }
-  } 
-}
-  return user;
+  }
+  return result;
 }
 
 // TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) 
 { 
   long uptime;

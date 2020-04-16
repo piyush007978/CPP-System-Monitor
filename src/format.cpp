@@ -14,8 +14,8 @@ string Format::ElapsedTime(long seconds) {
   int MM = SS / 60;
   SS = SS % 60;
   std::ostringstream time;
-  time << std::setfill('0') << std::setw(2) << HH << ":";
-  time << std::setfill('0') << std::setw(2) << MM << ":";
-  time << std::setfill('0') << std::setw(2) << SS;
-  return time.str(); 
+  string hh = (HH < 10 ? "0" : "") + std::to_string(HH);
+    string mm = (MM < 10 ? "0" : "") + std::to_string(MM);
+    string ss = (SS < 10 ? "0" : "") + std::to_string(SS);
+    return hh + ":" + mm + ":" + ss;
 }
