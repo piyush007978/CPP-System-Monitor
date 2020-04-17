@@ -6,7 +6,7 @@
 #include "processor.h"
 #include "linux_parser.h"
 
-// TODO: Return the aggregate CPU utilization
+// DONE: Return the aggregate CPU utilization
 //https://stackoverflow.com/questions/23367857/accurate-calculation-of-cpu-usage-given-in-percentage-in-linux
 
 //https://knowledge.udacity.com/questions/121171
